@@ -1,47 +1,54 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 
-const WEST_NAVY = '#0A2342'
-const WEST_GOLD = '#C9A84C'
-const WEST_GOLD_LIGHT = '#F5EDD6'
+const NAVY = '#0A2342'
+const GOLD = '#C9A84C'
+const GOLD_LIGHT = '#F5EDD6'
 
 const s = {
-  wrap: { fontFamily: "'Helvetica Neue', Arial, sans-serif", maxWidth: 700, margin: '0 auto', background: '#F7F6F3', minHeight: '100vh' },
-  header: { background: WEST_NAVY, padding: '20px 28px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  wrap: { fontFamily: "'Helvetica Neue', Arial, sans-serif", maxWidth: 760, margin: '0 auto', background: '#F7F6F3', minHeight: '100vh' },
+  header: { background: NAVY, padding: '20px 28px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   logo: { fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 700, color: 'white', letterSpacing: '0.04em' },
-  tagline: { fontSize: 11, color: WEST_GOLD, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 3, fontWeight: 500 },
-  body: { padding: '20px 20px 40px' },
+  tagline: { fontSize: 11, color: GOLD, letterSpacing: '0.18em', textTransform: 'uppercase', marginTop: 3, fontWeight: 500 },
+  body: { padding: '20px 20px 60px' },
   tabBar: { display: 'flex', gap: 6, marginBottom: 20, background: 'white', borderRadius: 10, padding: 5, border: '1px solid #E8E5DF' },
-  tab: (a) => ({ flex: 1, padding: '9px 12px', borderRadius: 7, border: 'none', background: a ? WEST_NAVY : 'transparent', color: a ? 'white' : '#888', cursor: 'pointer', fontSize: 13, fontWeight: 500, textAlign: 'center' }),
+  tab: (a) => ({ flex: 1, padding: '9px 12px', borderRadius: 7, border: 'none', background: a ? NAVY : 'transparent', color: a ? 'white' : '#888', cursor: 'pointer', fontSize: 13, fontWeight: 500, textAlign: 'center' }),
   card: { background: 'white', border: '1px solid #E8E5DF', borderRadius: 10, padding: '16px 18px', marginBottom: 10 },
-  cardHL: { background: 'white', border: `1.5px solid ${WEST_GOLD}`, borderRadius: 10, padding: '16px 18px', marginBottom: 14 },
+  cardHL: { background: 'white', border: `1.5px solid ${GOLD}`, borderRadius: 10, padding: '16px 18px', marginBottom: 14 },
   lbl: { fontSize: 11, fontWeight: 600, color: '#999', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: 6 },
   inp: { width: '100%', padding: '9px 12px', border: '1px solid #DDD', borderRadius: 7, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', color: '#222', outline: 'none', background: 'white' },
-  btnPrimary: { background: WEST_NAVY, color: 'white', border: 'none', borderRadius: 8, padding: '11px 20px', fontSize: 14, fontWeight: 500, cursor: 'pointer' },
-  btnGold: { background: WEST_GOLD, color: WEST_NAVY, border: 'none', borderRadius: 8, padding: '11px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer' },
-  btnOutline: { background: 'white', color: WEST_NAVY, border: `1.5px solid ${WEST_NAVY}`, borderRadius: 7, padding: '7px 16px', fontSize: 13, fontWeight: 500, cursor: 'pointer' },
-  sectionTitle: { fontSize: 17, fontWeight: 600, color: WEST_NAVY, margin: '0 0 4px' },
-  goldLine: { width: 28, height: 2.5, background: WEST_GOLD, borderRadius: 2, margin: '6px 0 16px' },
-  platformBtn: (a) => ({ padding: '8px 16px', borderRadius: 20, border: `1.5px solid ${a ? WEST_GOLD : '#DDD'}`, background: a ? WEST_GOLD_LIGHT : 'white', color: a ? WEST_NAVY : '#777', cursor: 'pointer', fontSize: 13, fontWeight: a ? 600 : 400 }),
+  btnPrimary: { background: NAVY, color: 'white', border: 'none', borderRadius: 8, padding: '11px 20px', fontSize: 14, fontWeight: 500, cursor: 'pointer' },
+  btnGold: { background: GOLD, color: NAVY, border: 'none', borderRadius: 8, padding: '11px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer' },
+  btnOutline: { background: 'white', color: NAVY, border: `1.5px solid ${NAVY}`, borderRadius: 7, padding: '7px 16px', fontSize: 13, fontWeight: 500, cursor: 'pointer' },
+  sectionTitle: { fontSize: 17, fontWeight: 600, color: NAVY, margin: '0 0 4px' },
+  goldLine: { width: 28, height: 2.5, background: GOLD, borderRadius: 2, margin: '6px 0 16px' },
+  platformBtn: (a) => ({ padding: '8px 16px', borderRadius: 20, border: `1.5px solid ${a ? GOLD : '#DDD'}`, background: a ? GOLD_LIGHT : 'white', color: a ? NAVY : '#777', cursor: 'pointer', fontSize: 13, fontWeight: a ? 600 : 400 }),
 }
+
+const PLATFORMS = [
+  { key: 'linkedin', label: 'LinkedIn', multi: false },
+  { key: 'instagram', label: 'Instagram', multi: true },
+  { key: 'x', label: 'X / Twitter', multi: false },
+  { key: 'facebook', label: 'Facebook', multi: false },
+]
 
 export default function WestAgent() {
   const [tab, setTab] = useState('archivo')
   const [news, setNews] = useState([])
   const [loading, setLoading] = useState(true)
-
   const [showForm, setShowForm] = useState(false)
   const [fTitle, setFTitle] = useState('')
   const [fSource, setFSource] = useState('')
   const [fContent, setFContent] = useState('')
   const [saving, setSaving] = useState(false)
-
   const [selected, setSelected] = useState([])
   const [extraCtx, setExtraCtx] = useState('')
+  const [genImages, setGenImages] = useState(true)
+  const [status, setStatus] = useState('')
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState('')
-
   const [posts, setPosts] = useState(null)
+  const [images, setImages] = useState({})
   const [platform, setPlatform] = useState('linkedin')
   const [copied, setCopied] = useState(null)
 
@@ -77,11 +84,25 @@ export default function WestAgent() {
     setSelected(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
   }
 
+  async function callIdeogram(prompt) {
+    const r = await fetch('/api/ideogram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    })
+    const d = await r.json()
+    if (d.error) throw new Error(d.error)
+    return d.base64
+  }
+
   async function generate() {
     if (!selected.length || generating) return
-    setGenerating(true); setGenError(''); setPosts(null)
+    setGenerating(true); setGenError(''); setPosts(null); setImages({})
     const newsItems = news.filter(n => selected.includes(n.id))
+
     try {
+      // Step 1: Generate copy + image prompts
+      setStatus('Paso 1/3 — Generando textos para las 4 redes...')
       const r = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -89,9 +110,41 @@ export default function WestAgent() {
       })
       const data = await r.json()
       if (data.error) throw new Error(data.error)
-      setPosts(data); setPlatform('linkedin'); setTab('resultados')
+      setPosts(data)
+
+      // Step 2: Generate images if enabled
+      if (genImages) {
+        setStatus('Paso 2/3 — Generando imágenes con Ideogram (puede tardar ~30s)...')
+        const imgMap = {}
+        const tasks = []
+
+        for (const p of PLATFORMS) {
+          if (p.multi && data[p.key]?.image_prompts) {
+            tasks.push(
+              Promise.allSettled(data[p.key].image_prompts.map(pr => callIdeogram(pr)))
+                .then(results => {
+                  imgMap[p.key] = results.map(r => r.status === 'fulfilled' ? r.value : null)
+                })
+            )
+          } else if (data[p.key]?.image_prompt) {
+            tasks.push(
+              callIdeogram(data[p.key].image_prompt)
+                .then(b64 => { imgMap[p.key] = b64 })
+                .catch(() => { imgMap[p.key] = null })
+            )
+          }
+        }
+        await Promise.all(tasks)
+        setImages(imgMap)
+      }
+
+      setStatus('')
+      setPlatform('linkedin')
+      setTab('resultados')
     } catch (e) {
-      console.error(e); setGenError('Hubo un error al generar. Intentá de nuevo.')
+      console.error(e)
+      setGenError('Error: ' + e.message)
+      setStatus('')
     }
     setGenerating(false)
   }
@@ -101,12 +154,12 @@ export default function WestAgent() {
     setCopied(key); setTimeout(() => setCopied(null), 2000)
   }
 
-  const PLATFORMS = [
-    { key: 'linkedin', label: 'LinkedIn' },
-    { key: 'instagram', label: 'Instagram' },
-    { key: 'x', label: 'X / Twitter' },
-    { key: 'facebook', label: 'Facebook' },
-  ]
+  function downloadImage(b64, filename) {
+    const a = document.createElement('a')
+    a.href = `data:image/png;base64,${b64}`
+    a.download = filename
+    a.click()
+  }
 
   const tabs = [
     { key: 'archivo', label: '📰  Archivo' },
@@ -121,10 +174,10 @@ export default function WestAgent() {
         <div style={s.header}>
           <div>
             <div style={s.logo}>WEST INVESTMENTS</div>
-            <div style={s.tagline}>Agente de Contenido</div>
+            <div style={s.tagline}>Agente de Contenido · Claude + Ideogram</div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ background: 'rgba(201,168,76,0.15)', border: '1px solid rgba(201,168,76,0.4)', color: WEST_GOLD, borderRadius: 20, padding: '4px 14px', fontSize: 12, fontWeight: 500 }}>
+            <div style={{ background: 'rgba(201,168,76,0.15)', border: '1px solid rgba(201,168,76,0.4)', color: GOLD, borderRadius: 20, padding: '4px 14px', fontSize: 12, fontWeight: 500 }}>
               {loading ? 'Cargando...' : `${news.length} noticia${news.length !== 1 ? 's' : ''}`}
             </div>
             <a href="/add" style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 6, display: 'block', textDecoration: 'none' }}>
@@ -135,30 +188,23 @@ export default function WestAgent() {
 
         <div style={s.body}>
           <div style={s.tabBar}>
-            {tabs.map(t => (
-              <button key={t.key} style={s.tab(tab === t.key)} onClick={() => setTab(t.key)}>{t.label}</button>
-            ))}
+            {tabs.map(t => <button key={t.key} style={s.tab(tab === t.key)} onClick={() => setTab(t.key)}>{t.label}</button>)}
           </div>
 
           {/* ARCHIVO */}
           {tab === 'archivo' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
-                <div>
-                  <p style={s.sectionTitle}>Archivo de Noticias</p>
-                  <div style={s.goldLine} />
-                </div>
-                <button style={s.btnPrimary} onClick={() => setShowForm(v => !v)}>
-                  {showForm ? 'Cancelar' : '+ Agregar'}
-                </button>
+                <div><p style={s.sectionTitle}>Archivo de Noticias</p><div style={s.goldLine} /></div>
+                <button style={s.btnPrimary} onClick={() => setShowForm(v => !v)}>{showForm ? 'Cancelar' : '+ Agregar'}</button>
               </div>
 
               {showForm && (
                 <div style={s.cardHL}>
-                  <p style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 600, color: WEST_NAVY }}>Nueva noticia manual</p>
+                  <p style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 600, color: NAVY }}>Nueva noticia manual</p>
                   <div style={{ marginBottom: 12 }}>
                     <label style={s.lbl}>Título *</label>
-                    <input style={s.inp} value={fTitle} onChange={e => setFTitle(e.target.value)} placeholder="Título de la noticia..." />
+                    <input style={s.inp} value={fTitle} onChange={e => setFTitle(e.target.value)} placeholder="Título..." />
                   </div>
                   <div style={{ marginBottom: 12 }}>
                     <label style={s.lbl}>Fuente</label>
@@ -166,7 +212,7 @@ export default function WestAgent() {
                   </div>
                   <div style={{ marginBottom: 16 }}>
                     <label style={s.lbl}>Contenido *</label>
-                    <textarea style={{ ...s.inp, minHeight: 100, resize: 'vertical' }} value={fContent} onChange={e => setFContent(e.target.value)} placeholder="Pegá el texto de la noticia..." />
+                    <textarea style={{ ...s.inp, minHeight: 100, resize: 'vertical' }} value={fContent} onChange={e => setFContent(e.target.value)} placeholder="Pegá el texto..." />
                   </div>
                   <button style={{ ...s.btnGold, width: '100%', opacity: (!fTitle.trim() || !fContent.trim() || saving) ? 0.5 : 1 }} onClick={addNews} disabled={!fTitle.trim() || !fContent.trim() || saving}>
                     {saving ? 'Guardando...' : 'Guardar'}
@@ -174,20 +220,18 @@ export default function WestAgent() {
                 </div>
               )}
 
-              {loading ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#AAA' }}>Cargando archivo...</div>
-              ) : news.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#AAA' }}>
-                  <div style={{ fontSize: 36, marginBottom: 10 }}>📭</div>
-                  El archivo está vacío. Agregá noticias desde acá o desde el link del celu.
-                </div>
-              ) : (
-                news.map(n => (
+              {loading ? <div style={{ textAlign: 'center', padding: '40px', color: '#AAA' }}>Cargando...</div>
+                : news.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', color: '#AAA' }}>
+                    <div style={{ fontSize: 36, marginBottom: 10 }}>📭</div>
+                    El archivo está vacío. Agregá noticias desde acá o desde el link del celu.
+                  </div>
+                ) : news.map(n => (
                   <div key={n.id} style={s.card}>
                     <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontWeight: 600, fontSize: 14, color: WEST_NAVY, margin: '0 0 3px' }}>{n.title}</p>
-                        {n.source && <p style={{ fontSize: 12, color: WEST_GOLD, fontWeight: 500, margin: '0 0 6px' }}>{n.source}</p>}
+                        <p style={{ fontWeight: 600, fontSize: 14, color: NAVY, margin: '0 0 3px' }}>{n.title}</p>
+                        {n.source && <p style={{ fontSize: 12, color: GOLD, fontWeight: 500, margin: '0 0 6px' }}>{n.source}</p>}
                         <p style={{ fontSize: 13, color: '#666', lineHeight: 1.5, margin: 0 }}>
                           {n.content.length > 160 ? n.content.slice(0, 160) + '…' : n.content}
                         </p>
@@ -198,8 +242,7 @@ export default function WestAgent() {
                       <button onClick={() => removeNews(n.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#CCC', fontSize: 20, padding: 0, flexShrink: 0 }}>×</button>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
             </div>
           )}
 
@@ -212,31 +255,43 @@ export default function WestAgent() {
                 <div style={{ textAlign: 'center', padding: '40px', color: '#AAA' }}>Primero agregá noticias en el Archivo.</div>
               ) : (
                 <>
-                  <p style={{ fontSize: 13, color: '#777', margin: '0 0 16px', lineHeight: 1.6 }}>
-                    Seleccioná una o más noticias. El agente genera un post para <strong>LinkedIn, Instagram, X y Facebook</strong> con el tono de West.
-                  </p>
                   <label style={s.lbl}>Noticias ({selected.length} seleccionada{selected.length !== 1 ? 's' : ''})</label>
                   {news.map(n => {
                     const sel = selected.includes(n.id)
                     return (
-                      <div key={n.id} onClick={() => toggleSelect(n.id)} style={{ ...s.card, cursor: 'pointer', border: sel ? `1.5px solid ${WEST_NAVY}` : '1px solid #E8E5DF', background: sel ? '#F0F4FA' : 'white', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                        <div style={{ width: 19, height: 19, borderRadius: 5, border: `2px solid ${sel ? WEST_NAVY : '#CCC'}`, background: sel ? WEST_NAVY : 'white', flexShrink: 0, marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div key={n.id} onClick={() => toggleSelect(n.id)} style={{ ...s.card, cursor: 'pointer', border: sel ? `1.5px solid ${NAVY}` : '1px solid #E8E5DF', background: sel ? '#F0F4FA' : 'white', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                        <div style={{ width: 19, height: 19, borderRadius: 5, border: `2px solid ${sel ? NAVY : '#CCC'}`, background: sel ? NAVY : 'white', flexShrink: 0, marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           {sel && <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>✓</span>}
                         </div>
                         <div>
-                          <p style={{ fontWeight: 600, fontSize: 14, color: WEST_NAVY, margin: 0 }}>{n.title}</p>
-                          {n.source && <p style={{ fontSize: 12, color: WEST_GOLD, margin: '2px 0 0' }}>{n.source}</p>}
+                          <p style={{ fontWeight: 600, fontSize: 14, color: NAVY, margin: 0 }}>{n.title}</p>
+                          {n.source && <p style={{ fontSize: 12, color: GOLD, margin: '2px 0 0' }}>{n.source}</p>}
                         </div>
                       </div>
                     )
                   })}
-                  <div style={{ margin: '16px 0' }}>
+
+                  <div style={{ margin: '16px 0 12px' }}>
                     <label style={s.lbl}>Contexto adicional (opcional)</label>
                     <textarea style={{ ...s.inp, minHeight: 70, resize: 'vertical' }} value={extraCtx} onChange={e => setExtraCtx(e.target.value)} placeholder="Enfoque particular, instrucción específica..." />
                   </div>
+
+                  {/* Toggle imágenes */}
+                  <div onClick={() => setGenImages(v => !v)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: genImages ? '#F0F4FA' : 'white', border: `1.5px solid ${genImages ? NAVY : '#DDD'}`, borderRadius: 8, cursor: 'pointer', marginBottom: 16 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: 5, border: `2px solid ${genImages ? NAVY : '#CCC'}`, background: genImages ? NAVY : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {genImages && <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>✓</span>}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>Generar imágenes con Ideogram</div>
+                      <div style={{ fontSize: 11, color: '#999', marginTop: 1 }}>+30 segundos · 9 imágenes (6 slides Instagram + 1 por cada red)</div>
+                    </div>
+                  </div>
+
                   {genError && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, padding: '10px 14px', fontSize: 13, color: '#9B1C1C', marginBottom: 14 }}>{genError}</div>}
+                  {status && <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 8, padding: '10px 14px', fontSize: 13, color: '#1E40AF', marginBottom: 14 }}>{status}</div>}
+
                   <button style={{ ...s.btnPrimary, width: '100%', padding: '14px', fontSize: 15, opacity: (!selected.length || generating) ? 0.5 : 1, cursor: (!selected.length || generating) ? 'not-allowed' : 'pointer' }} onClick={generate} disabled={!selected.length || generating}>
-                    {generating ? '⏳  Generando...' : '✨  Generar posts para las 4 redes'}
+                    {generating ? status || 'Generando...' : '✨  Generar posts para las 4 redes'}
                   </button>
                 </>
               )}
@@ -249,22 +304,59 @@ export default function WestAgent() {
               <p style={s.sectionTitle}>Contenido generado</p>
               <div style={s.goldLine} />
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
-                {PLATFORMS.map(p => (
-                  <button key={p.key} style={s.platformBtn(platform === p.key)} onClick={() => setPlatform(p.key)}>{p.label}</button>
-                ))}
+                {PLATFORMS.map(p => <button key={p.key} style={s.platformBtn(platform === p.key)} onClick={() => setPlatform(p.key)}>{p.label}</button>)}
               </div>
+
               {PLATFORMS.map(p => platform === p.key && posts[p.key] && (
-                <div key={p.key} style={s.card}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, paddingBottom: 12, borderBottom: '1px solid #F0EDE8' }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: WEST_GOLD, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{p.label}</span>
-                    <button style={{ ...s.btnOutline, color: copied === p.key ? '#2D7A5E' : WEST_NAVY, borderColor: copied === p.key ? '#2D7A5E' : WEST_NAVY }} onClick={() => copyText(posts[p.key], p.key)}>
-                      {copied === p.key ? '✓ Copiado' : 'Copiar'}
-                    </button>
+                <div key={p.key}>
+                  {/* Copy */}
+                  <div style={s.card}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingBottom: 10, borderBottom: '1px solid #F0EDE8' }}>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: GOLD, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Texto</span>
+                      <button style={{ ...s.btnOutline, color: copied === p.key ? '#2D7A5E' : NAVY, borderColor: copied === p.key ? '#2D7A5E' : NAVY }} onClick={() => copyText(posts[p.key].copy, p.key)}>
+                        {copied === p.key ? '✓ Copiado' : 'Copiar texto'}
+                      </button>
+                    </div>
+                    <div style={{ whiteSpace: 'pre-wrap', fontSize: 14, color: '#333', lineHeight: 1.75 }}>{posts[p.key].copy}</div>
                   </div>
-                  <div style={{ whiteSpace: 'pre-wrap', fontSize: 14, color: '#333', lineHeight: 1.75 }}>{posts[p.key]}</div>
+
+                  {/* Images */}
+                  {images[p.key] && (
+                    <div style={s.card}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: GOLD, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12, paddingBottom: 10, borderBottom: '1px solid #F0EDE8' }}>
+                        {p.multi ? `Imágenes (${Array.isArray(images[p.key]) ? images[p.key].length : 0} slides)` : 'Imagen'}
+                      </div>
+                      {p.multi && Array.isArray(images[p.key]) ? (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+                          {images[p.key].map((b64, i) => b64 && (
+                            <div key={i}>
+                              <img src={`data:image/png;base64,${b64}`} style={{ width: '100%', borderRadius: 6 }} alt={`Slide ${i + 1}`} />
+                              <button onClick={() => downloadImage(b64, `west_instagram_slide${i + 1}.png`)} style={{ ...s.btnOutline, width: '100%', marginTop: 6, fontSize: 11 }}>
+                                ↓ Descargar Slide {i + 1}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : images[p.key] ? (
+                        <div>
+                          <img src={`data:image/png;base64,${images[p.key]}`} style={{ width: '100%', borderRadius: 8 }} alt={p.label} />
+                          <button onClick={() => downloadImage(images[p.key], `west_${p.key}.png`)} style={{ ...s.btnOutline, width: '100%', marginTop: 10, fontSize: 13 }}>
+                            ↓ Descargar imagen
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+
+                  {!images[p.key] && genImages && (
+                    <div style={{ ...s.card, textAlign: 'center', color: '#AAA', fontSize: 13 }}>
+                      No se pudo generar la imagen para esta red.
+                    </div>
+                  )}
+
+                  <button style={{ ...s.btnOutline, marginTop: 4, fontSize: 13 }} onClick={() => { setTab('generar'); setPosts(null); setImages({}) }}>← Generar de nuevo</button>
                 </div>
               ))}
-              <button style={{ ...s.btnOutline, marginTop: 12, fontSize: 13 }} onClick={() => { setTab('generar'); setPosts(null) }}>← Generar de nuevo</button>
             </div>
           )}
         </div>
